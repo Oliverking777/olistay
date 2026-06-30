@@ -1,0 +1,31 @@
+# ─── Python virtual environments (THE reason your push failed — never commit these) ───
+venv/
+.venv/
+env/
+ENV/
+
+# ─── Python bytecode / caches ───
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ─── Secrets / local config (rotate any keys that were already committed!) ───
+.env
+.env.*
+!.env.example
+
+# ─── IDE ───
+.idea/
+.vscode/
+
+# ─── Runtime / generated data ───
+# ChromaDB rebuilds itself; the free host filesystem is ephemeral anyway.
+data/chromadb/
+*.log
+
+# ─── OS ───
+.DS_Store
+Thumbs.db

@@ -1,0 +1,67 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Render Blueprint for the OLISTAY AI Engine (FastAPI)
+# Docs: https://render.com/docs/blueprint-spec
+#
+# How to use:
+#   1. Push this repo to GitHub (now that venvs are git-ignored).
+#   2. On render.com → New → Blueprint → connect this repo.
+#   3. Render reads this file and creates the web service automatically.
+#   4. Fill in the secret env vars (marked sync:false) in the dashboard.
+# ─────────────────────────────────────────────────────────────────────────────
+services:
+  - type: web
+    name: olistay-ai
+    runtime: python
+    plan: free                       # free tier: sleeps after 15 min idle, ~30s cold start
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.3"
+      - key: APP_ENV
+        value: production
+
+      # ── LLM (hosted API — no local Ollama needed on the server) ──
+      - key: LLM_PROVIDER
+        value: groq
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: GROQ_API_KEY
+        sync: false                  # ← paste your NEW (rotated) key in the dashboard
+      - key: GEMINI_MODEL
+        value: gemini-2.0-flash-lite
+      - key: GEMINI_API_KEY
+        sync: false                  # ← paste your NEW (rotated) key in the dashboard
+
+      # ── Scoring weights (must sum to 1.0) ──
+      - key: WEIGHT_FINANCIAL
+        value: "0.30"
+      - key: WEIGHT_GOAL_ALIGNMENT
+        value: "0.25"
+      - key: WEIGHT_HOUSEHOLD
+        value: "0.15"
+      - key: WEIGHT_LIFESTYLE
+        value: "0.15"
+      - key: WEIGHT_SAFETY
+        value: "0.10"
+      - key: WEIGHT_STABILITY
+        value: "0.05"
+
+      # ── Financial thresholds ──
+      - key: MAX_RENT_TO_INCOME_RATIO
+        value: "0.30"
+      - key: MIN_EMERGENCY_FUND_MONTHS
+        value: "3"
+
+      # ── CORS: set this to your deployed frontend / Spring Boot URL ──
+      - key: SPRING_BOOT_BASE_URL
+        sync: false
+
+      # ── ChromaDB + model storage (ephemeral on free tier; rebuilt on boot) ──
+      - key: CHROMA_PERSIST_DIR
+        value: ./data/chromadb
+      - key: CHROMA_COLLECTION_NAME
+        value: financial_knowledge
+      - key: MODELS_DIR
+        value: ./data/models

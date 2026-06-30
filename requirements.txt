@@ -1,0 +1,28 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# OLISTAY AI Engine — Python Dependencies
+# Install with: pip install -r requirements.txt
+# Python >= 3.10 recommended
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Web Framework ─────────────────────────────────────────────────────────────
+fastapi
+uvicorn[standard]==0.49.0        # ASGI server (includes websockets + httptools)
+
+# ── Data Validation ───────────────────────────────────────────────────────────
+pydantic
+
+# ── ML & Data Science ─────────────────────────────────────────────────────────
+xgboost                   # Rent predictor + adaptive weight learner
+scikit-learn            # LabelEncoder, train_test_split, cross_val_score
+joblib                   # Model persistence (save/load .joblib files)
+pandas                    # CSV handling, seed data, training DataFrames
+numpy                    # Vector operations (content-based cosine similarity)
+
+# ── RAG / Vector Store ────────────────────────────────────────────────────────
+chromadb                  # Persistent knowledge base for narrator RAG
+
+# ── HTTP / LLM Clients ───────────────────────────────────────────────────────
+requests                # Calls to Ollama / Claude / OpenAI / Gemini APIs
+
+# ── Environment & Config ─────────────────────────────────────────────────────
+python-dotenv             # Loads .env variables at startup
