@@ -147,9 +147,19 @@ def health_check():
 
 if __name__ == "__main__":
     import uvicorn
+
+    # Auto-reload is DEV-only. In production (APP_ENV=production) it stays off.
+    # Even in dev we must NOT watch ./data — feedback_learner, rent_predictor and
+    # ChromaDB write .joblib / .sqlite3 files into ./data/models and
+    # ./data/chromadb at runtime. If those live inside the reload-watched tree,
+    # a normal request that persists data triggers a server restart mid-request,
+    # which the Spring Boot caller sees as "I/O error on POST ... : null".
+    dev_reload = os.getenv("APP_ENV", "development").lower() != "production"
+
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
         port=int(os.getenv("APP_PORT", 8000)),
-        reload=True,
+        reload=dev_reload,
+        reload_excludes=["data/*", "*.joblib", "*.sqlite3", "*.json"] if dev_reload else None,
     )
