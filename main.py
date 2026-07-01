@@ -159,7 +159,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=int(os.getenv("APP_PORT", 8000)),
+        port=int(os.getenv("PORT", os.getenv("APP_PORT", 8000))),
         reload=dev_reload,
         reload_excludes=["data/*", "*.joblib", "*.sqlite3", "*.json"] if dev_reload else None,
     )
